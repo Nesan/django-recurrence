@@ -1,6 +1,5 @@
-from django import forms
+from django import forms, urls
 from django.conf import settings
-from django.core import urlresolvers
 from django.views import i18n
 from django.utils import safestring
 from django.utils.translation import ugettext_lazy as _, get_language
@@ -205,9 +204,9 @@ def find_recurrence_i18n_js_catalog():
 
     # first try to use the dynamic form of the javascript_catalog view
     try:
-        return urlresolvers.reverse(
+        return urls.reverse(
             i18n.javascript_catalog, kwargs={'packages': 'recurrence'})
-    except urlresolvers.NoReverseMatch:
+    except urls.NoReverseMatch:
         pass
 
     # then scan the entire urlconf for a javascript_catalague pattern
@@ -221,9 +220,9 @@ def find_recurrence_i18n_js_catalog():
             elif (pattern.callback == i18n.javascript_catalog and
                   'recurrence' in pattern.default_args.get('packages', [])):
                 if pattern.name:
-                    return urlresolvers.reverse(pattern.name)
+                    return urls.reverse(pattern.name)
                 else:
-                    return urlresolvers.reverse(pattern.callback)
+                    return urls.reverse(pattern.callback)
 
     root_urlconf = __import__(settings.ROOT_URLCONF, {}, {}, [''])
     url = check_urlpatterns(root_urlconf.urlpatterns)
